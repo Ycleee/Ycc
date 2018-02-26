@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class loginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private MySqliteHelper mySqliteHelper;
     SharedPreferences sharedPreferences;
@@ -37,7 +37,7 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
                 if(login(name,password))
                 {
                     Toast.makeText(this,"登录成功,欢迎用户"+name,Toast.LENGTH_SHORT).show();
-                    Intent intent =new Intent(loginActivity.this,MainActivity.class);
+                    Intent intent =new Intent(LoginActivity.this,MainActivity.class);
                     startActivity(intent);
                     sharedPreferences=getSharedPreferences("sharedPreferences",MODE_PRIVATE);
                     sharedPreferences.edit().putBoolean("isLogin",true).apply();
@@ -50,7 +50,7 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.zhuce_button:
-                Intent intent1 = new Intent(loginActivity.this, registerActivity.class);
+                Intent intent1 = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent1);
                 finish();
                 break;

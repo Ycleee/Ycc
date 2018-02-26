@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class registerActivity extends AppCompatActivity implements View.OnClickListener {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private SQLiteDatabase db;
     private MySqliteHelper mySqliteHelper;
     public void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class registerActivity extends AppCompatActivity implements View.OnClickL
         } else {
             if (register(name, password)) {
                 Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(registerActivity.this, loginActivity.class);
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 SharedPreferences sharedPreferences=getSharedPreferences("sharedPreferences",MODE_PRIVATE);
                 sharedPreferences.edit().putString("name",name).apply();
                 startActivity(intent);

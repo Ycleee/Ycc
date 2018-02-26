@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -81,7 +80,7 @@ public class NewsFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 Map<String, Object> map = data.get(position);
                 String url =(String)(map.get("url"));
-                Intent intent =new Intent(getContext(),web.class);
+                Intent intent =new Intent(getContext(),WebFragment.class);
                 intent.putExtra("ExtraUrl",url);
                 startActivity(intent);
             }
@@ -99,6 +98,7 @@ public class NewsFragment extends Fragment {
         if(m.matches()){
             Title=m.group(2);
         }
+
         Pattern p1 =Pattern.compile("a href='(.*?)'(.*?)title='(.*?)'");
         Matcher m1 =p1.matcher(Title);
         while (m1.find()){

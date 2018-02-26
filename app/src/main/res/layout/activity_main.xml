@@ -29,7 +29,4 @@
         app:headerLayout="@layout/head"
         app:menu="@menu/nav_menu">
     </android.support.design.widget.NavigationView>
-
-
-
 </android.support.v4.widget.DrawerLayout>

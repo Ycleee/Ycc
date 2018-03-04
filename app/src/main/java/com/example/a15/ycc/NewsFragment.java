@@ -7,9 +7,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,12 +34,12 @@ import java.util.regex.Pattern;
 public class NewsFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
+    private SearchView searchView;
 
     private MyAdapter myAdapter;
 
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Map<String, Object>> data;
-    private final static String MURL="http://jwb.xujc.com/tzgg/list.htm";
 
 
     public NewsFragment() {
@@ -46,6 +51,7 @@ public class NewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_news, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycleView);
+        searchView=(SearchView)view.findViewById(R.id.search);
         initView();
         return view;
     }
@@ -71,8 +77,11 @@ public class NewsFragment extends Fragment {
     }
     private void initData() {
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-
-        myAdapter = new MyAdapter(getContext(),data);
+        List<String> mData=new ArrayList<>();
+        for(int i=0;i<data.size();i++){
+            mData.add(data.get(i).get("title").toString());
+        }
+        myAdapter = new MyAdapter(getContext(),mData);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(myAdapter);
         myAdapter.setOnMyItemClickListener(new MyAdapter.OnMyItemClickListener() {
@@ -85,22 +94,34 @@ public class NewsFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        searchView.setQueryHint("输入关键字");
+        searchView.setIconified(true);
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                myAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
 
     }
+
+
     private List<Map<String,Object>> getDate(){
         List<Map<String,Object>> result =new ArrayList<Map<String,Object>>();
-        String stringDate = getHttp(MURL);
-        String Title ="";
-        Pattern p =Pattern.compile("(.*?)<ul class=\"wp_article_list\">(.*?)<div id=\"wp_paging_w7\">(.*?)");
-        Matcher m =p.matcher(stringDate);
-        if(m.matches()){
-            Title=m.group(2);
+        StringBuilder stringBuilder =new StringBuilder();
+        for(int i=1;i<6;i++){
+            String MURL="http://jwb.xujc.com/tzgg/list"+i+".htm";
+            stringBuilder.append(getHttp(MURL));
         }
-
-        Pattern p1 =Pattern.compile("a href='(.*?)'(.*?)title='(.*?)'");
-        Matcher m1 =p1.matcher(Title);
+        Pattern p1 =Pattern.compile("<span class='Article_Title'><a href='(.*?)'(.*?)title='(.*?)'");
+        Matcher m1 =p1.matcher(stringBuilder);
         while (m1.find()){
             MatchResult mr=m1.toMatchResult();
             Map<String,Object> map =new HashMap<String,Object>();

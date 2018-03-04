@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     private NavigationView navigationView;
     private Bitmap head;
     private CircleImageView imageView;
+    private TextView textView;
     private static String path = "/sdcard/myHead/";
     int lastSelectedPosition = 0;
     String TAG ="AAAAA";
@@ -62,16 +64,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 .setActiveColor(R.color.blue)
                 .initialise();
         bottomNavigationBar.setTabSelectedListener(this);
-        View view =View.inflate(this,R.layout.head,null);
-        imageView=(CircleImageView) view.findViewById(R.id.circleImageview);
         navigationView=(NavigationView)findViewById(R.id.nav);
-        imageView.setImageResource(R.drawable.ic_accessibility_black_48dp);
+        View headView =navigationView.getHeaderView(0);
+        imageView=(CircleImageView) headView.findViewById(R.id.circleImageview);
+        textView=(TextView)headView.findViewById(R.id.Name);
+        Intent i =getIntent();
+        textView.setText(i.getStringExtra("name"));
         drawerLayout=(DrawerLayout)findViewById(R.id.drawerLayout);
         navigationView.setNavigationItemSelectedListener(this);
         drawerLayout.closeDrawers();
         setDefaultFragment();
-
-
     }
 
     private void setDefaultFragment() {
@@ -179,12 +181,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 1:
-                cropPhoto(data.getData());
+                if(data==null){
+                    return;
+                }else {
+                    cropPhoto(data.getData());
+                }
                 break;
             case 3:
-                Bundle extras =data.getExtras();
-                head=extras.getParcelable("data");
-                setPictoView(head);
+                if(data==null){
+                    return;
+                }else {
+                    Bundle extras = data.getExtras();
+                    head = extras.getParcelable("data");
+                    setPictoView(head);
+                    imageView.setImageBitmap(head);
+                }
                 break;
             default:
                 break;

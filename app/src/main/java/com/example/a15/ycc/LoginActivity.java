@@ -38,6 +38,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 {
                     Toast.makeText(this,"登录成功,欢迎用户"+name,Toast.LENGTH_SHORT).show();
                     Intent intent =new Intent(LoginActivity.this,MainActivity.class);
+                    intent.putExtra("name",name);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     sharedPreferences=getSharedPreferences("sharedPreferences",MODE_PRIVATE);
                     sharedPreferences.edit().putBoolean("isLogin",true).apply();

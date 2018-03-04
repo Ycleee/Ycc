@@ -11,10 +11,8 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+
 
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implements Filterable{
@@ -75,7 +73,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
     }
     public void setOnMyItemClickListener(OnMyItemClickListener listener){
         this.listener = listener;
-
     }
 
 

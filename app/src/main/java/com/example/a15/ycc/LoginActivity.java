@@ -36,13 +36,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.login_button:
                 if(login(name,password))
                 {
+                    sharedPreferences=getSharedPreferences("sharedPreferences",MODE_PRIVATE);
+                    sharedPreferences.edit().putBoolean("isLogin",true).apply();
                     Toast.makeText(this,"登录成功,欢迎用户"+name,Toast.LENGTH_SHORT).show();
                     Intent intent =new Intent(LoginActivity.this,MainActivity.class);
                     intent.putExtra("name",name);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    sharedPreferences=getSharedPreferences("sharedPreferences",MODE_PRIVATE);
-                    sharedPreferences.edit().putBoolean("isLogin",true).apply();
                     finish();
                 }
                 else

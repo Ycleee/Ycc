@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                     head = extras.getParcelable("data");
                     setPictoView(head);
                     imageView.setImageBitmap(head);
+                    Toast.makeText(this, "设置成功", Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:

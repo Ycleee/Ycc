@@ -2,13 +2,17 @@ package com.example.a15.ycc;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +24,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
     private CardView cardView;
     private OnMyItemClickListener listener ;
     private Context context;
+    private int VIEW_TYPE;
 
 
-
-    public MyAdapter(Context context,List<String> data) {
+    public MyAdapter(Context context,List<String> data,int viewType) {
         this.context=context;
         this.mData = data;
         tempData=data;
+        VIEW_TYPE=viewType;
     }
 
     @Override
@@ -70,6 +75,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
 
     public  interface OnMyItemClickListener {
         void onItemClick(View view , int position);
+        void onItemLongClick(View view , int position);
+        List<String> getData(List<String> data);
     }
     public void setOnMyItemClickListener(OnMyItemClickListener listener){
         this.listener = listener;
@@ -79,29 +86,80 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.textview,parent,false);
-        cardView=(CardView) view.findViewById(R.id.cardView);
-        cardView.setRadius(8);
-        cardView.setCardElevation(8);
-        cardView.setContentPadding(5,5,5,5);
-        ViewHolder viewHolder = new ViewHolder(view);
+        ViewHolder viewHolder=null;
+        switch (viewType){
+            case 1:
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.textview,parent,false);
+                cardView=(CardView) view.findViewById(R.id.cardView);
+                cardView.setRadius(8);
+                cardView.setCardElevation(8);
+                cardView.setContentPadding(5,5,5,5);
+                viewHolder = new ViewHolder(view);
+                break;
+            case 2:
+                View view1=LayoutInflater.from(parent.getContext()).inflate(R.layout.textview2,parent,false);
+                viewHolder = new ViewHolder(view1);
+                break;
+        }
         return viewHolder;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return VIEW_TYPE;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        holder.textView.setText(mData.get(position));
-        if(listener!=null){
-            holder.textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onItemClick(v,position);
-            }
-        });
+        switch (holder.getItemViewType()) {
+            case 1:
+                holder.textView.setText(mData.get(position));
+                if (listener != null) {
+                    holder.textView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            listener.onItemClick(v, position);
+                        }
+                    });
+                    holder.imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            listener.onItemClick(v, position);
+                        }
+                    });
+                }
+                break;
+            case 2:
+                if (listener != null){
+                    holder.textView3.setText(mData.get(position));
+                    holder.textView3.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            listener.onItemClick(v, position);
+                        }
+                    });
+                    holder.textView3.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            listener.onItemLongClick(v,position);
+                            PopupMenu menu =new PopupMenu(context,v);
+                            menu.getMenuInflater().inflate(R.menu.list_menu,menu.getMenu());
+                            menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem item) {
+                                    mData.remove(position);
+                                    notifyDataSetChanged();
+                                    return false;
+                                }
+                            });
+                            menu.show();
+                            return false;
 
+                        }
+                    });
+                }
         }
-
     }
 
     @Override
@@ -109,10 +167,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> implem
         return mData.size();
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        TextView textView,textView3;
+        ImageView imageView;
         public ViewHolder(View itemView) {
             super(itemView);
             textView=(TextView)itemView.findViewById(R.id.textView);
+            textView3=(TextView)itemView.findViewById(R.id.textView3);
+            imageView=(ImageView)itemView.findViewById(R.id.button_collect);
         }
     }
 }

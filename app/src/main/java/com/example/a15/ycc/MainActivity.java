@@ -47,18 +47,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     private static String path = "/sdcard/myHead/";
     int lastSelectedPosition = 0;
     String TAG ="AAAAA";
-    static boolean isLogin=false;
+    boolean isLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SharedPreferences sharedPreferences =getSharedPreferences("sharedPreferences",MODE_PRIVATE);
+        SharedPreferences sharedPreferences =getSharedPreferences("login",MODE_PRIVATE);
         isLogin = sharedPreferences.getBoolean("isLogin",false);
         bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar
-                .addItem(new BottomNavigationItem(R.mipmap.ic_language_black_48dp,"资讯"))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_language_black_48dp,"校园资讯"))
                 .addItem(new BottomNavigationItem(R.mipmap.ic_announcement_black_48dp,"交流区"))
-                .addItem(new BottomNavigationItem(R.mipmap.ic_grade_black_48dp,"资料"))
+                .addItem(new BottomNavigationItem(R.mipmap.ic_grade_black_48dp,"新生攻略"))
                 .addItem(new BottomNavigationItem(R.mipmap.ic_map_black_48dp,"地图"))
                 .setFirstSelectedPosition(lastSelectedPosition)
                 .setActiveColor(R.color.blue)
@@ -163,14 +163,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id =item.getItemId();
-        if(id==R.id.nav_login){
-            Intent intent=new Intent(this,LoginActivity.class);
-            startActivity(intent);
-        }else if(id==R.id.nav_icon){
-            Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
-            startActivityForResult(intent,1);
+        switch (item.getItemId()){
+            case R.id.nav_login:
+                Intent intent=new Intent(this,LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_icon:
+                Intent intent2=new Intent(Intent.ACTION_GET_CONTENT);
+                intent2.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
+                startActivityForResult(intent2,1);
+                break;
+            case R.id.nav_collect:
+                Intent intent3 =new Intent(this,CollectActivity.class);
+                startActivity(intent3);
+                break;
+            default:break;
         }
         drawerLayout.closeDrawers();
         return true;

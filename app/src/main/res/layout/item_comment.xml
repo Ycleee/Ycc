@@ -10,12 +10,21 @@
             android:textSize="15sp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="3dp"/>
+        <TextView
+            android:id="@+id/comment_louceng"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignBaseline="@+id/comment_content"
+            android:layout_alignBottom="@+id/comment_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/comment_content"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:textSize="15sp"
+            android:layout_marginRight="20dp"
             android:layout_toRightOf="@id/comment_name"/>
         <TextView
             android:id="@+id/comment_time"

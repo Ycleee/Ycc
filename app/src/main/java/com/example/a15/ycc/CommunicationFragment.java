@@ -11,12 +11,14 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,11 +61,30 @@ public class CommunicationFragment extends Fragment implements View.OnClickListe
         hide_down.setOnClickListener(this);
         comment_send.setOnClickListener(this);
         rl_comment.setVisibility(View.VISIBLE);
-
         mySqliteHelper = new MySqliteHelper(getContext(),"test7.db",null,5);
         db =mySqliteHelper.getWritableDatabase();
         mAdapter =new AdapterComment(getContext(),db);
         mListView.setAdapter(mAdapter);
+        mAdapter.setOnMyItemClickListener(new AdapterComment.OnItemClickListener() {
+            @Override
+            public void onItemLongClick(View view, final int position) {
+                PopupMenu menu =new PopupMenu(getContext(),view);
+                menu.getMenuInflater().inflate(R.menu.comment_menu,menu.getMenu());
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        comment_content.setText("回复"+position+"楼--");
+                        comment_content.setFocusable(true);
+                        comment_content.requestFocus();
+                        InputMethodManager imm =(InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(0,InputMethodManager.HIDE_NOT_ALWAYS);
+                        comment_content.setSelection(comment_content.getText().length());
+                        return false;
+                    }
+                });
+                menu.show();
+            }
+        });
         return view;
     }
 

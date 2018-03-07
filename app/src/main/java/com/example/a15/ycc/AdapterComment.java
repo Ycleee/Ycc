@@ -14,6 +14,7 @@ import android.widget.TextView;
 public class AdapterComment extends BaseAdapter{
 
     private Context context;
+    private OnItemClickListener listener;
     SQLiteDatabase db = null ;
 
     public AdapterComment(Context c, SQLiteDatabase db)
@@ -21,6 +22,12 @@ public class AdapterComment extends BaseAdapter{
         super();
         this.context=c;
         this.db=db;
+    }
+    public  interface OnItemClickListener{
+        void onItemLongClick(View view , int position);
+    }
+    public void setOnMyItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
     }
     @Override
     public int getCount() {
@@ -39,15 +46,23 @@ public class AdapterComment extends BaseAdapter{
     }
 
     @Override
-    public View getView(int i, View convertView, ViewGroup viewGroup) {
+    public View getView(final int i, View convertView, ViewGroup viewGroup) {
         ViewHolder holder;
         if(convertView == null){
             holder = new ViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_comment, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_comment,null);
             holder.comment_name = (TextView) convertView.findViewById(R.id.comment_name);
             holder.comment_content = (TextView) convertView.findViewById(R.id.comment_content);
             holder.comment_time=(TextView) convertView.findViewById(R.id.comment_time);
+            holder.comment_louceng=(TextView)convertView.findViewById(R.id.comment_louceng);
             convertView.setTag(holder);
+            holder.comment_content.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onItemLongClick(v,i);
+                    return true;
+                }
+            });
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
@@ -60,8 +75,9 @@ public class AdapterComment extends BaseAdapter{
             holder.comment_name.setText(cursor.getString(name));
             holder.comment_content.setText(cursor.getString(text));
             holder.comment_time.setText(cursor.getString(time));
+            holder.comment_louceng.setText("#"+String.valueOf(i));
         }
-
+        cursor.close();
         return convertView;
     }
 
@@ -69,5 +85,6 @@ public class AdapterComment extends BaseAdapter{
         TextView comment_name;
         TextView comment_content;
         TextView comment_time;
+        TextView comment_louceng;
     }
 }

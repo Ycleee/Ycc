@@ -1,7 +1,9 @@
 package com.example.a15.ycc;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -24,7 +26,8 @@ public class ListFragment extends Fragment {
 
     private RecyclerView recyclerView2;
     private List<String> mData;
-    private ListAdapter listAdapter;
+    private MyAdapter myAdapter;
+    private String str="";
     private int mTitle[]=new int[]{R.string.title1,R.string.title2,R.string.title3,R.string.title4
             ,R.string.title5,R.string.title6,R.string.title7
             ,R.string.title8,R.string.title9,R.string.title10,R.string.title11};
@@ -46,37 +49,47 @@ public class ListFragment extends Fragment {
         inidata();
         recyclerView2=(RecyclerView)view.findViewById(R.id.recycleView2);
         recyclerView2.setLayoutManager(new LinearLayoutManager(getContext()));
-        listAdapter =new ListAdapter(getContext(),mData);
-        recyclerView2.setAdapter(listAdapter);
-        listAdapter.setOnMyItemClickListener(new ListAdapter.OnItemClickListener() {
+        myAdapter =new MyAdapter(getContext(),mData,1);
+        recyclerView2.setAdapter(myAdapter);
+        myAdapter.setOnMyItemClickListener(new MyAdapter.OnMyItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String content=getString(mContent[position]);
-                Intent intent =new Intent(getContext(),ContentFragment.class);
-                intent.putExtra("content",content);
-                startActivity(intent);
+                switch (view.getId()) {
+                    case R.id.textView:
+                        String content = getString(mContent[position]);
+                        Intent intent = new Intent(getContext(), ContentFragment.class);
+                        intent.putExtra("content", content);
+                        startActivity(intent);
+                        break;
+                    case R.id.button_collect:
+                        Toast.makeText(getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+                        SharedPreferences preferences = getActivity().getSharedPreferences("List", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+
+                        if (str.contains(String.valueOf(position))) {
+                            return;
+                        } else {
+                            str += String.valueOf(position);
+                            str += "#";
+                        }
+                        editor.putString("key", str);
+                        editor.apply();
+                        break;
+                    default:
+                        break;
+                }
+
             }
 
             @Override
             public void onItemLongClick(View view, int position) {
-                PopupMenu popupMenu =new PopupMenu(getContext(),view);
-                popupMenu.inflate(R.menu.list_menu);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
-                });
-                popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-                    @Override
-                    public void onDismiss(PopupMenu menu) {
-                    }
-                });
-                popupMenu.show();
+            }
+
+            @Override
+            public List<String> getData(List<String> data) {
+                return data;
             }
         });
-
         return view;
     }
 

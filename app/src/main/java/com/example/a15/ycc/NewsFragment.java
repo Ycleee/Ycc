@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,9 +36,7 @@ public class NewsFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private SearchView searchView;
-
     private MyAdapter myAdapter;
-
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Map<String, Object>> data;
 
@@ -81,19 +80,35 @@ public class NewsFragment extends Fragment {
         for(int i=0;i<data.size();i++){
             mData.add(data.get(i).get("title").toString());
         }
-        myAdapter = new MyAdapter(getContext(),mData);
+        myAdapter = new MyAdapter(getContext(),mData,2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(myAdapter);
         myAdapter.setOnMyItemClickListener(new MyAdapter.OnMyItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Map<String, Object> map = data.get(position);
-                String url =(String)(map.get("url"));
-                Intent intent =new Intent(getContext(),WebFragment.class);
-                intent.putExtra("ExtraUrl",url);
-                startActivity(intent);
+                switch (view.getId()){
+                    case R.id.textView3:
+                        Map<String, Object> map = data.get(position);
+                        String url =(String)(map.get("url"));
+                        Intent intent =new Intent(getContext(),WebFragment.class);
+                        intent.putExtra("ExtraUrl",url);
+                        startActivity(intent);
+                        break;
+                    default:break;
+                }
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+
+            @Override
+            public List<String> getData(List<String> data) {
+                return data;
             }
         });
+
         searchView.setQueryHint("输入关键字");
         searchView.setIconified(true);
         searchView.setIconifiedByDefault(false);
